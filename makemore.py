@@ -28,10 +28,13 @@ class Bigram(nn.Module):
     """
     Bigram Language Model: a lookup table built with counts of bigram pairs in the data
     """
-    def __init__(self, config):
+    def __init__(self, config, bigram_probs=None):
         super().__init__()
         n = config.vocab_size
-        self.logits = nn.Parameter(torch.zeros(n,n))
+        if bigram_probs is not None:
+            self.logits = nn.Parameter(bigram_probs)
+        else:
+            self.logits = nn.Parameter(torch.zeros(n,n))
     
     def get_block_size(self):
         return 1 # only needs 1 previous char to predict next char
@@ -78,7 +81,7 @@ def print_samples(num=10):
     train_samples, test_samples, new_samples = [], [], []
     for i in range(X_samp.size(0)):
         # get the i'th row of sampled integers, as python list
-        row = X_samp[i, 1:] # cropped out the first <START> char
+        row = X_samp[i, 1:].tolist() # cropped out the first <START> char
         
         # 0 is also the Stopping point, so getting the index of where 0 occurs, it it does
         crop_index = row.index(0) if 0 in row else len(row)
@@ -123,7 +126,19 @@ class CharDataset(Dataset):
         self.chars = chars
         self.max_word_length = max_word_length
         self.stoi = {ch: i+1 for i, ch in enumerate(chars)}
+        self.stoi['.'] = 0 # start token
         self.itos = {i:ch for ch,i in self.stoi.items()}
+
+    def get_bigram_count_matrix(self):
+        counts = torch.zeros((len(self.stoi), len(self.stoi)), dtype=torch.int32)
+        for word in self.words:
+            chs = ['.'] + list(word) + ['.']
+            for ch1, ch2 in zip(chs, chs[1:]):
+                ix1 = self.stoi[ch1]
+                ix2 = self.stoi[ch2]
+                counts[ix1, ix2] += 1
+        probs = counts.float() / counts.sum(1, keepdim=True)
+        return probs
 
     def __len__(self):
         return len(self.words)
@@ -234,7 +249,7 @@ if __name__ == '__main__':
     parser.add_argument('--resume', action='store_true', help='when this flag is used, we will resume optimization form existing model in the work_dir')
     parser.add_argument('--sample-only', action='store_true', help="just sample from the model and quit, don't train")
     parser.add_argument('--num-workers', '-n', type=int, default=4, help='number of data workers for both train/test')
-    parser.add_argument('--max_steps', type=int, default=-1, help='max number of optimization steps to run for, or -1 for infinite')
+    parser.add_argument('--max-steps', type=int, default=-1, help='max number of optimization steps to run for, or -1 for infinite')
     parser.add_argument('--device', type=str, default='cpu', help='device to use for compuyte, examples: cpu|cuda|cuda:2|mps')
     parser.add_argument('--seed', type=int, default=3407, help='seed')
 
@@ -266,13 +281,14 @@ if __name__ == '__main__':
     train_dataset, test_dataset = create_datasets(args.input_file)
     vocab_size = train_dataset.get_vocab_size()
     block_size = train_dataset.get_output_length() # block_size = max_word_length + 1
+    bigram_probs = train_dataset.get_bigram_count_matrix()
     print(f'dataset determined that: {vocab_size=}, {block_size=}')
 
     # init model
     config = ModelConfig(vocab_size=vocab_size, block_size=block_size,
                          n_layer=args.n_layer, n_head=args.n_head, n_embd=args.n_embd, n_embd2=args.n_embd2)
     if args.type == 'bigram':
-        model = Bigram(config=config)
+        model = Bigram(config=config, bigram_probs=bigram_probs)
     else:
         raise ValueError(f'model type {args.type} is not recognized ')
     
@@ -281,7 +297,7 @@ if __name__ == '__main__':
     
     if args.resume or args.sample_only:
         print('resuming form existing model in the work_dir')
-        model.load_state_dict(torch.load(os.path.join(args.word_dir, 'model.pt')))
+        model.load_state_dict(torch.load(os.path.join(args.work_dir, 'model.pt')))
     if args.sample_only:
         print_samples(num=50)
         sys.exit()
@@ -345,4 +361,3 @@ if __name__ == '__main__':
         # termination condition
         if args.max_steps >= 0 and step >= args.max_steps:
             break
-
