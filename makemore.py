@@ -78,11 +78,12 @@ def print_samples(num=10):
     top_k = args.top_k if args.top_k != -1 else None
     steps = train_dataset.get_output_length() - 1 # -1 coz we already start with <START> token
     X_samp = generate(model, X_init, max_new_tokens=steps)
+    # print(f'printing X_samp from print_samples: \n{X_samp}')
+
     train_samples, test_samples, new_samples = [], [], []
     for i in range(X_samp.size(0)):
         # get the i'th row of sampled integers, as python list
         row = X_samp[i, 1:].tolist() # cropped out the first <START> char
-        
         # 0 is also the Stopping point, so getting the index of where 0 occurs, it it does
         crop_index = row.index(0) if 0 in row else len(row)
         row = row[:crop_index]
@@ -95,13 +96,12 @@ def print_samples(num=10):
             test_samples.append(word_samp)
         else:
             new_samples.append(word_samp)
-        
-        print('-'*80)
-        for lst, desc in [(train_samples, 'in train'), (test_samples, 'in test'), (new_samples, 'new')]:
-            print(f'{len(lst)} samples that are in {desc}')
-            for word in lst:
-                print(word)
-        print('-'*80)
+    print('-'*80)
+    for lst, desc in [(train_samples, 'in train'), (test_samples, 'in test'), (new_samples, 'new')]:
+        print(f'{len(lst)} samples that are {desc}')
+        for word in lst:
+            print(word)
+    print('-'*80)
 
 
 @torch.inference_mode()
@@ -296,10 +296,10 @@ if __name__ == '__main__':
     print(f'model #params: {sum(p.numel() for p in model.parameters())}')
     
     if args.resume or args.sample_only:
-        print('resuming form existing model in the work_dir')
+        print('resuming from existing model in the work_dir')
         model.load_state_dict(torch.load(os.path.join(args.work_dir, 'model.pt')))
     if args.sample_only:
-        print_samples(num=50)
+        print_samples(num=4)
         sys.exit()
 
     # init optimizer
