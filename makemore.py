@@ -22,6 +22,52 @@ class ModelConfig:
     dropout: float = None
 
 # ---------------------------------------------------------------------------------------------------
+# MLP
+
+class MLP(nn.Module):
+    """
+    takes context of characters; block_size is context length
+    embeds each char index with lookup table; then concatenates all those embeddings
+    feeds the embeddings to NN to generated prob distributions over vocab_size
+    """
+    def __init__(self, config):
+        super().__init__()
+        self.block_size = config.block_size
+        self.vocab_size = config.vocab_size
+        self.wte = nn.Embedding(config.vocab_size + 1, config.n_embd) # token embeddings lookup table
+        self.mlp = nn.Sequential(
+            nn.Linear(self.block_size * config.n_embd, config.n_embd2),
+            nn.Tanh(),
+            nn.Linear(config.n_embd2, config.vocab_size)
+        )
+
+    def get_block_size(self):
+        return self.block_size
+
+    def forward(self, idx, targets=None):
+        # idx.shape is (b,t)
+        
+        # forward
+        embs = []
+        for k in range(self.block_size):
+            tok_emb = self.wte(idx) # tok emb of shape (b, t, n_embd)
+            
+            idx = torch.roll(idx, 1, 1)
+            idx[:, 0] = self.vocab_size # special <BLANK> token
+            embs.append(tok_emb)
+        
+        # concat all of the embeddings together and pass through an MLP
+        x = torch.cat(embs, dim=-1) # (b, t, n_embd * block_size)
+        logits = self.mlp(x) # (b, t, vocab_size)
+
+        loss = None
+        if targets is not None:
+            # ignore -1 entries in the targets
+            loss = F.cross_entropy(logits.view(-1,logits.size(-1)), targets.view(-1), ignore_index = -1)
+            return logits, loss
+
+
+# ---------------------------------------------------------------------------------------------------
 # Bigram LM
 
 class Bigram(nn.Module):
@@ -74,7 +120,7 @@ def generate(model, idx, max_new_tokens):
 def print_samples(num=10):
     """ samples from the model and print the decoded samples """
     # initialize X with 'num' rows of 0s
-    X_init = torch.zeros(num, 1, dtype=torch.long).to(args.device)
+    X_init = torch.zeros(num, 1, dtype=torch.long).to('cpu')
     top_k = args.top_k if args.top_k != -1 else None
     steps = train_dataset.get_output_length() - 1 # -1 coz we already start with <START> token
     X_samp = generate(model, X_init, max_new_tokens=steps)
@@ -287,8 +333,11 @@ if __name__ == '__main__':
     # init model
     config = ModelConfig(vocab_size=vocab_size, block_size=block_size,
                          n_layer=args.n_layer, n_head=args.n_head, n_embd=args.n_embd, n_embd2=args.n_embd2)
+    
     if args.type == 'bigram':
         model = Bigram(config=config, bigram_probs=bigram_probs)
+    elif args.type == 'mlp':
+        model = MLP(config)
     else:
         raise ValueError(f'model type {args.type} is not recognized ')
     
@@ -299,7 +348,7 @@ if __name__ == '__main__':
         print('resuming from existing model in the work_dir')
         model.load_state_dict(torch.load(os.path.join(args.work_dir, 'model.pt')))
     if args.sample_only:
-        print_samples(num=4)
+        print_samples(num=10)
         sys.exit()
 
     # init optimizer
@@ -318,10 +367,15 @@ if __name__ == '__main__':
         batch = batch_loader.next()
         batch = [t.to(args.device) for t in batch]
         X,Y = batch
+        # print(f'a batch from X: \n{X}')
+        # print(f'shape of X batch: {X.shape}')
+        # print(f'a batch from Y: \n{Y}')
+        # print(f'shape of Y batch: {Y.shape}')
+        # sys.exit()
 
         # forward pass
         logits, loss = model(X,Y)
-
+    
         # calculate gradients, update weights
         model.zero_grad(set_to_none=True)
         loss.backward()

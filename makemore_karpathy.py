@@ -373,15 +373,30 @@ class MLP(nn.Module):
         return self.block_size
 
     def forward(self, idx, targets=None):
+        print('-'*50)
+        print(f'shape of idx: {idx.shape}')
+        print(idx)
+        print(f'shape of targets: {targets.shape}')
+        print(targets)
+        print('-'*50)
 
+        print(f'\nblock_size = {self.block_size}\n')
         # gather the word embeddings of the previous 3 words
         embs = []
         for k in range(self.block_size):
+            print('-'*50)
             tok_emb = self.wte(idx) # token embeddings of shape (b, t, n_embd)
+            print(f'tok_emb shape: {tok_emb.shape}')
+            # print(f'\n{tok_emb=}')
             idx = torch.roll(idx, 1, 1)
+            # print(f'idx = {idx}')
             idx[:, 0] = self.vocab_size # special <BLANK> token
+            print(f'idx = {idx}')
+            print(f'tgt = {targets}')
             embs.append(tok_emb)
-
+            print(len(embs), embs[0].shape)
+            print('-'*50)
+        sys.exit()
         # concat all of the embeddings together and pass through an MLP
         x = torch.cat(embs, -1) # (b, t, n_embd * block_size)
         logits = self.mlp(x)
@@ -630,6 +645,7 @@ if __name__ == '__main__':
     vocab_size = train_dataset.get_vocab_size()
     block_size = train_dataset.get_output_length()
     print(f"dataset determined that: {vocab_size=}, {block_size=}")
+    print(f'\n stoi is: \n{train_dataset.stoi}\n')
 
     # init model
     config = ModelConfig(vocab_size=vocab_size, block_size=block_size,
