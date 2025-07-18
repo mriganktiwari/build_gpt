@@ -8,8 +8,10 @@ torch.manual_seed(2)
 block_size = 8
 batch_size = 4
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-max_iters = 10000
+max_iters = 20000
 learning_rate = 1e-3
+eval_iters = 250
+eval_interval = 1000
 
 # data
 shakespeare = open('input.txt', 'r').read()
@@ -25,6 +27,21 @@ encoded_text = encode(shakespeare)
 n = int(len(encoded_text) * 0.9)
 train_data = encoded_text[:n]
 val_data = encoded_text[n:]
+
+# evaluate loss
+@torch.no_grad()
+def estimate_loss():
+    out = {}
+    model.eval()
+    for split in ['train', 'val']:
+        losses = torch.zeros(eval_iters)
+        for k in range(eval_iters):
+            x, y = get_batch(split)
+            _, loss = model(x, y)
+            losses[k] = loss.item()
+        out[split] = losses.mean()
+    model.train()
+    return out
 
 # data loader
 def get_batch(split):
@@ -72,12 +89,15 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 for iter in range(max_iters):
     xb, yb = get_batch('train')
     logits, loss = model(xb, yb)
+
+    if iter % eval_interval == 0:
+        losses = estimate_loss()
+        print(f"step {iter}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}")
+
     optimizer.zero_grad(set_to_none=True)
     loss.backward()
     optimizer.step()
 
-print(loss.item())
-
 # generation
-idx = torch.zeros((1,1), dtype=torch.long)
+idx = torch.zeros((1,1), dtype=torch.long, device=device)
 print(decode(model.generate(idx, max_new_tokens=500)[0].tolist()))
