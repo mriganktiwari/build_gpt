@@ -8,7 +8,7 @@ torch.manual_seed(2)
 block_size = 8
 batch_size = 4
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-max_iters = 20000
+max_iters = 50000
 learning_rate = 1e-3
 eval_iters = 250
 eval_interval = 1000
@@ -58,13 +58,18 @@ def get_batch(split):
 class BigramLM(nn.Module):
     def __init__(self):
         super().__init__()
-        self.token_encoding_table = nn.Embedding(vocab_size, n_embd)
+        self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
+        self.position_embedding_table = nn.Embedding(block_size, n_embd)
         self.lm_head = nn.Linear(n_embd, vocab_size)
-    
+
     def forward(self, x, targets = None):
         # x shape       - (b, t)
         # targets shape - (b, t)
-        tok_emb = self.token_encoding_table(x) # (b, t, n_embd)
+        B, T = x.shape
+
+        tok_emb = self.token_embedding_table(x) # (b, t, n_embd)
+        pos_emb = self.position_embedding_table(torch.arange(T, device=device)) # (t, n_embd)
+        tok_emb += pos_emb # (b, t, n_embd)
         logits = self.lm_head(tok_emb) # (b, t, vocab_size)
         
         if targets is None:
@@ -78,7 +83,8 @@ class BigramLM(nn.Module):
     def generate(self, idx, max_new_tokens):
         # idx is (b, t)
         for _ in range(max_new_tokens):
-            logits, loss = self(idx) # (b, t, vocab_size)
+            idx_chopped = idx[:, -block_size:]
+            logits, loss = self(idx_chopped) # (b, t, vocab_size)
             logits = logits[:, -1, :] # (b, vocab_size)
             probs = F.softmax(logits, dim=-1) # (b, vocab_size)
             idx_next = torch.multinomial(probs, num_samples=1) # (b, 1)
