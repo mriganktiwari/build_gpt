@@ -12,6 +12,7 @@ max_iters = 20000
 learning_rate = 1e-3
 eval_iters = 250
 eval_interval = 1000
+n_embd = 32
 
 # data
 shakespeare = open('input.txt', 'r').read()
@@ -55,14 +56,16 @@ def get_batch(split):
 
 # model class
 class BigramLM(nn.Module):
-    def __init__(self, vocab_size):
+    def __init__(self):
         super().__init__()
-        self.token_encoding_table = nn.Embedding(vocab_size, vocab_size)
+        self.token_encoding_table = nn.Embedding(vocab_size, n_embd)
+        self.lm_head = nn.Linear(n_embd, vocab_size)
     
     def forward(self, x, targets = None):
         # x shape       - (b, t)
         # targets shape - (b, t)
-        logits = self.token_encoding_table(x) # (b, t, vocab_size)
+        tok_emb = self.token_encoding_table(x) # (b, t, n_embd)
+        logits = self.lm_head(tok_emb) # (b, t, vocab_size)
         
         if targets is None:
             loss = None
@@ -83,7 +86,7 @@ class BigramLM(nn.Module):
         return idx
 
 # training
-model = BigramLM(vocab_size).to(device)
+model = BigramLM().to(device)
 optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 
 for iter in range(max_iters):
