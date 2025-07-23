@@ -9,10 +9,11 @@ block_size = 8
 batch_size = 4
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 max_iters = 50000
-learning_rate = 1e-3
+learning_rate = 1e-4
 eval_iters = 250
 eval_interval = 1000
 n_embd = 32
+n_heads = 4
 
 # data
 shakespeare = open('input.txt', 'r').read()
@@ -94,14 +95,31 @@ class FeedForward(nn.Module):
     def forward(self, x):
         return self.net(x)
 
+class Block(nn.Module):
+    def __init__(self, n_heads, n_embd):
+        super().__init__()
+        head_size = n_embd // n_heads
+        self.sa_heads = MultiHeadAttention(n_heads, head_size)
+        self.ffwd = FeedForward(n_embd)
+
+    def forward(self, x):
+        x = self.sa_heads(x)
+        x = self.ffwd(x)
+        return x
+
 # model class
 class GPT(nn.Module):
     def __init__(self):
         super().__init__()
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
         self.position_embedding_table = nn.Embedding(block_size, n_embd)
-        self.sa_heads = MultiHeadAttention(4, n_embd//4)
-        self.ffwd = FeedForward(n_embd=n_embd)
+        # self.sa_heads = MultiHeadAttention(4, n_embd//4)
+        # self.ffwd = FeedForward(n_embd=n_embd)
+        self.blocks = nn.Sequential(
+            Block(n_heads, n_embd),
+            Block(n_heads, n_embd),
+            Block(n_heads, n_embd),
+        )
         self.lm_head = nn.Linear(n_embd, vocab_size)
 
     def forward(self, x, targets = None):
@@ -112,8 +130,9 @@ class GPT(nn.Module):
         tok_emb = self.token_embedding_table(x) # (b, t, n_embd)
         pos_emb = self.position_embedding_table(torch.arange(T, device=device)) # (t, n_embd)
         tok_emb += pos_emb # (b, t, n_embd)
-        x = self.sa_heads(tok_emb) # apply 1 head of self-attention (b, t, head_size)
-        x = self.ffwd(x)
+        # x = self.sa_heads(tok_emb) # apply 1 head of self-attention (b, t, head_size)
+        # x = self.ffwd(x)
+        x = self.blocks(tok_emb)
         logits = self.lm_head(x) # (b, t, vocab_size)
         
         if targets is None:
