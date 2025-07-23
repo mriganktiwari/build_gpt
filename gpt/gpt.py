@@ -99,7 +99,7 @@ class FeedForward(nn.Module):
         return self.net(x)
 
 class Block(nn.Module):
-    def __init__(self, n_heads, n_embd):
+    def __init__(self, n_embd, n_heads):
         super().__init__()
         head_size = n_embd // n_heads
         self.sa_heads = MultiHeadAttention(n_heads, head_size)
@@ -121,9 +121,10 @@ class GPT(nn.Module):
         # self.sa_heads = MultiHeadAttention(4, n_embd//4)
         # self.ffwd = FeedForward(n_embd=n_embd)
         self.blocks = nn.Sequential(
-            Block(n_heads, n_embd),
-            Block(n_heads, n_embd),
-            Block(n_heads, n_embd),
+            Block(n_embd, n_heads),
+            Block(n_embd, n_heads),
+            Block(n_embd, n_heads),
+            nn.LayerNorm(n_embd),
         )
         self.lm_head = nn.Linear(n_embd, vocab_size)
 
