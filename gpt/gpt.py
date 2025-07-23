@@ -83,6 +83,17 @@ class MultiHeadAttention(nn.Module):
         out = torch.cat([h(x) for h in self.heads], dim=-1) # (b, t, head_size*num_heads)
         return out
 
+class FeedForward(nn.Module):
+    def __init__(self, n_embd):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(n_embd, n_embd),
+            nn.ReLU(),
+        )
+
+    def forward(self, x):
+        return self.net(x)
+
 # model class
 class GPT(nn.Module):
     def __init__(self):
@@ -90,6 +101,7 @@ class GPT(nn.Module):
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
         self.position_embedding_table = nn.Embedding(block_size, n_embd)
         self.sa_heads = MultiHeadAttention(4, n_embd//4)
+        self.ffwd = FeedForward(n_embd=n_embd)
         self.lm_head = nn.Linear(n_embd, vocab_size)
 
     def forward(self, x, targets = None):
@@ -101,6 +113,7 @@ class GPT(nn.Module):
         pos_emb = self.position_embedding_table(torch.arange(T, device=device)) # (t, n_embd)
         tok_emb += pos_emb # (b, t, n_embd)
         x = self.sa_heads(tok_emb) # apply 1 head of self-attention (b, t, head_size)
+        x = self.ffwd(x)
         logits = self.lm_head(x) # (b, t, vocab_size)
         
         if targets is None:
