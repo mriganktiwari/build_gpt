@@ -61,7 +61,7 @@ class Head(nn.Module):
         self.query = nn.Linear(n_embd, head_size, bias=False)
         self.value = nn.Linear(n_embd, head_size, bias=False)
         self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))
-    
+
     def forward(self, x):
         B,T,C = x.shape
         k = self.key(x) # (b, t, n_embd) @ (n_embd, head_size) --> (b, t, head_size)
@@ -74,13 +74,22 @@ class Head(nn.Module):
         out = wei @ v # (b, t, t) @ (b, t, head_size) --> (b, t, head_size)
         return out
 
+class MultiHeadAttention(nn.Module):
+    def __init__(self, num_heads, head_size):
+        super().__init__()
+        self.heads = nn.ModuleList([Head(head_size) for _ in range(num_heads)])
+
+    def forward(self, x):
+        out = torch.cat([h(x) for h in self.heads], dim=-1) # (b, t, head_size*num_heads)
+        return out
+
 # model class
 class GPT(nn.Module):
     def __init__(self):
         super().__init__()
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
         self.position_embedding_table = nn.Embedding(block_size, n_embd)
-        self.sa_head = Head(head_size=n_embd)
+        self.sa_heads = MultiHeadAttention(4, n_embd//4)
         self.lm_head = nn.Linear(n_embd, vocab_size)
 
     def forward(self, x, targets = None):
@@ -91,7 +100,7 @@ class GPT(nn.Module):
         tok_emb = self.token_embedding_table(x) # (b, t, n_embd)
         pos_emb = self.position_embedding_table(torch.arange(T, device=device)) # (t, n_embd)
         tok_emb += pos_emb # (b, t, n_embd)
-        x = self.sa_head(tok_emb) # apply 1 head of self-attention (b, t, head_size)
+        x = self.sa_heads(tok_emb) # apply 1 head of self-attention (b, t, head_size)
         logits = self.lm_head(x) # (b, t, vocab_size)
         
         if targets is None:
@@ -115,6 +124,7 @@ class GPT(nn.Module):
 
 # training
 model = GPT().to(device)
+print(f'{sum([p.numel() for p in model.parameters()])} parameters')
 optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 
 for iter in range(max_iters):
