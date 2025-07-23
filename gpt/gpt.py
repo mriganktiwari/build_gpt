@@ -6,9 +6,9 @@ import torch.nn.functional as F
 torch.manual_seed(2)
 
 block_size = 256
-batch_size = 64
+batch_size = 128
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-max_iters = 50000
+max_iters = 10000
 learning_rate = 3e-4
 eval_iters = 250
 eval_interval = 1000
