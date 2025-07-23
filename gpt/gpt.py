@@ -9,7 +9,7 @@ block_size = 8
 batch_size = 4
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 max_iters = 50000
-learning_rate = 1e-4
+learning_rate = 1e-3
 eval_iters = 250
 eval_interval = 1000
 n_embd = 32
@@ -101,10 +101,12 @@ class Block(nn.Module):
         head_size = n_embd // n_heads
         self.sa_heads = MultiHeadAttention(n_heads, head_size)
         self.ffwd = FeedForward(n_embd)
+        self.ln1 = nn.LayerNorm(n_embd)
+        self.ln2 = nn.LayerNorm(n_embd)
 
     def forward(self, x):
-        x = self.sa_heads(x)
-        x = self.ffwd(x)
+        x = self.ln1(self.sa_heads(x))
+        x = self.ln2(self.ffwd(x))
         return x
 
 # model class
