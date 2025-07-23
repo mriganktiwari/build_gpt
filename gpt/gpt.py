@@ -105,8 +105,8 @@ class Block(nn.Module):
         self.ln2 = nn.LayerNorm(n_embd)
 
     def forward(self, x):
-        x = self.ln1(self.sa_heads(x))
-        x = self.ln2(self.ffwd(x))
+        x = x + self.ln1(self.sa_heads(x))
+        x = x + self.ln2(self.ffwd(x))
         return x
 
 # model class
