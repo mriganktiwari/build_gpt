@@ -5,15 +5,17 @@ import torch.nn.functional as F
 # hparams
 torch.manual_seed(2)
 
-block_size = 8
-batch_size = 4
+block_size = 256
+batch_size = 64
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 max_iters = 50000
-learning_rate = 1e-3
+learning_rate = 5e-4
 eval_iters = 250
 eval_interval = 1000
-n_embd = 32
-n_heads = 4
+n_embd = 384
+n_heads = 6
+n_layers = 6
+dropout = 0.2
 
 # data
 shakespeare = open('input.txt', 'r').read()
@@ -63,6 +65,8 @@ class Head(nn.Module):
         self.value = nn.Linear(n_embd, head_size, bias=False)
         self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))
 
+        self.dropout = nn.Dropout(dropout)
+
     def forward(self, x):
         B,T,C = x.shape
         k = self.key(x) # (b, t, n_embd) @ (n_embd, head_size) --> (b, t, head_size)
@@ -71,6 +75,7 @@ class Head(nn.Module):
         wei = q @ k.transpose(-2, -1) / (C**0.5) # (b, t, head_size) @ (b, head_size, t) --> (b, t, t)
         wei = wei.masked_fill_(self.tril[:T, :T] == 0, float('-inf'))
         wei = F.softmax(wei, dim=-1) # (b, t, t)
+        wei = self.dropout(wei)
 
         out = wei @ v # (b, t, t) @ (b, t, head_size) --> (b, t, head_size)
         return out
@@ -80,10 +85,11 @@ class MultiHeadAttention(nn.Module):
         super().__init__()
         self.heads = nn.ModuleList([Head(head_size) for _ in range(num_heads)])
         self.proj = nn.Linear(n_embd, n_embd) # projection layer after sa heads
+        self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
         out = torch.cat([h(x) for h in self.heads], dim=-1) # (b, t, head_size*num_heads)
-        out = self.proj(out)
+        out = self.dropout(self.proj(out))
         return out
 
 class FeedForward(nn.Module):
@@ -94,9 +100,10 @@ class FeedForward(nn.Module):
             nn.ReLU(),
             nn.Linear(4 * n_embd, n_embd), # projection layer after ffwd
         )
+        self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
-        return self.net(x)
+        return self.dropout(self.net(x))
 
 class Block(nn.Module):
     def __init__(self, n_embd, n_heads):
@@ -118,14 +125,9 @@ class GPT(nn.Module):
         super().__init__()
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
         self.position_embedding_table = nn.Embedding(block_size, n_embd)
-        # self.sa_heads = MultiHeadAttention(4, n_embd//4)
-        # self.ffwd = FeedForward(n_embd=n_embd)
-        self.blocks = nn.Sequential(
-            Block(n_embd, n_heads),
-            Block(n_embd, n_heads),
-            Block(n_embd, n_heads),
-            nn.LayerNorm(n_embd),
-        )
+        blocks = [Block(n_embd, n_heads) for _ in range(n_layers)]
+        self.blocks = nn.Sequential(*blocks)
+        self.ln_f = nn.LayerNorm(n_embd)
         self.lm_head = nn.Linear(n_embd, vocab_size)
 
     def forward(self, x, targets = None):
@@ -136,9 +138,8 @@ class GPT(nn.Module):
         tok_emb = self.token_embedding_table(x) # (b, t, n_embd)
         pos_emb = self.position_embedding_table(torch.arange(T, device=device)) # (t, n_embd)
         tok_emb += pos_emb # (b, t, n_embd)
-        # x = self.sa_heads(tok_emb) # apply 1 head of self-attention (b, t, head_size)
-        # x = self.ffwd(x)
         x = self.blocks(tok_emb)
+        x = self.ln_f(x)
         logits = self.lm_head(x) # (b, t, vocab_size)
         
         if targets is None:
