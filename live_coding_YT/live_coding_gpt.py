@@ -56,10 +56,15 @@ class BigramLM(nn.Module):
     def __init__(self):
         super().__init__()
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
+        self.position_embedding_table = nn.Embedding(block_size, n_embd)
         self.lm_head = nn.Linear(n_embd, vocab_size)
 
     def forward(self, x, targets = None):
+        B,T = x.shape
+
         tok_emb = self.token_embedding_table(x) # (b, t, n_embd)
+        pos_emb = self.position_embedding_table(torch.arange(T, device=device)) # (b, t, n_embd)
+        tok_emb += pos_emb
         logits = self.lm_head(tok_emb) # (b, t, vocab_size)
 
         if targets is None:
@@ -78,7 +83,8 @@ class BigramLM(nn.Module):
     def generate(self, idx, max_new_tokens=100):
         # idx: (b, t)
         for _ in range(max_new_tokens):
-            logits, _ = self(idx) # (b, vocab_size)
+            idx_cropped = idx[:, -block_size:] # (b, block_size)
+            logits, _ = self(idx_cropped) # (b, vocab_size)
             logits = logits[:, -1, :] # (b, vocab_size)
             probs = F.softmax(logits, dim=-1) # (b, vocab_size)
             idx_new = torch.multinomial(probs, num_samples=1)
