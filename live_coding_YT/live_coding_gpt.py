@@ -10,6 +10,9 @@ eval_iters = 250
 max_iters = 10000
 eval_interval = 1000
 n_embd = 32
+n_heads = 4
+n_layers = 2
+dropout = 0.2
 
 torch.manual_seed(2)
 
@@ -63,6 +66,8 @@ class Head(nn.Module):
         self.value = nn.Linear(n_embd, head_size)
         self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))
 
+        self.dropout = nn.Dropout(dropout)
+
     def forward(self, x):
         B,T,C = x.shape
         q = self.query(x) # (b,t,head_size)
@@ -72,6 +77,7 @@ class Head(nn.Module):
         wei = q @ k.transpose(-2,-1) / (self.head_size ** 0.5) # (b,t,head_size) @ (b,head_size,t) --> (b,t,t)
         wei = wei.masked_fill_(self.tril[:T, :T]==0, float('-inf'))
         wei = F.softmax(wei, dim=-1) # (b,t,t)
+        wei = self.dropout(wei)
 
         out = wei @ v # (b,t,t) @ (b,t,head_size) --> (b,t,head_size)
         return out
@@ -81,10 +87,11 @@ class MultiHeadedAttention(nn.Module):
         super().__init__()
         self.heads = nn.ModuleList([Head(head_size=head_size) for _ in range(n_heads)])
         self.proj = nn.Linear(n_embd, n_embd)
+        self.dropout = nn.Dropout(dropout)
     
     def forward(self, x):
         out = torch.cat([h(x) for h in self.heads], dim=-1) # list of (b,t,head_size//n_heads) --> (b,t,head_size)
-        out = self.proj(out) # (b,t,n_embd)
+        out = self.dropout(self.proj(out)) # (b,t,n_embd)
         return out
 
 class FeedForward(nn.Module):
@@ -95,21 +102,35 @@ class FeedForward(nn.Module):
             nn.ReLU(),
             nn.Linear(4*n_embd, n_embd),
         )
+        self.dropout = nn.Dropout(dropout)
     
     def forward(self, x):
         # x: (b,t,n_embd)
-        out = self.net(x)
+        out = self.dropout(self.net(x))
         return out
+
+class Block(nn.Module):
+    def __init__(self, n_heads, n_embd):
+        super().__init__()
+        head_size = n_embd // n_heads
+        self.sa_heads = MultiHeadedAttention(n_heads, head_size=head_size)
+        self.ffwd = FeedForward(n_embd)
+        self.ln1 = nn.LayerNorm(n_embd)
+        self.ln2 = nn.LayerNorm(n_embd)
+
+    def forward(self, x):
+        x = x + self.sa_heads(self.ln1(x))
+        x = x + self.ffwd(self.ln2(x))
+        return x
 
 class BigramLM(nn.Module):
     def __init__(self):
         super().__init__()
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
         self.position_embedding_table = nn.Embedding(block_size, n_embd)
-        self.sa_heads = MultiHeadedAttention(4, n_embd//4)
-        self.ffwd = FeedForward(n_embd)
-        self.ln1 = nn.LayerNorm(n_embd)
-        self.ln2 = nn.LayerNorm(n_embd)
+        blocks = [Block(n_heads, n_embd) for _ in range(n_layers)]
+        self.blocks = nn.Sequential(*blocks)
+        self.ln = nn.LayerNorm(n_embd)
         self.lm_head = nn.Linear(n_embd, vocab_size)
 
     def forward(self, x, targets = None):
@@ -118,8 +139,8 @@ class BigramLM(nn.Module):
         tok_emb = self.token_embedding_table(x) # (b, t, n_embd)
         pos_emb = self.position_embedding_table(torch.arange(T, device=device)) # (b, t, n_embd)
         x = tok_emb + pos_emb
-        x = self.ln1(x + self.sa_heads(x)) # residual connections
-        x = self.ln2(x + self.ffwd(x)) # residual connections
+        x = self.blocks(x)
+        x = self.ln(x)
         logits = self.lm_head(x) # (b, t, vocab_size)
 
         if targets is None:
