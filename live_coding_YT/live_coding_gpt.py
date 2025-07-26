@@ -87,12 +87,27 @@ class MultiHeadedAttention(nn.Module):
         out = self.proj(out) # (b,t,n_embd)
         return out
 
+class FeedForward(nn.Module):
+    def __init__(self, n_embd):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(n_embd, 4*n_embd),
+            nn.ReLU(),
+            nn.Linear(4*n_embd, n_embd),
+        )
+    
+    def forward(self, x):
+        # x: (b,t,n_embd)
+        out = self.net(x)
+        return out
+
 class BigramLM(nn.Module):
     def __init__(self):
         super().__init__()
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
         self.position_embedding_table = nn.Embedding(block_size, n_embd)
         self.sa_heads = MultiHeadedAttention(4, n_embd//4)
+        self.ffwd = FeedForward(n_embd)
         self.lm_head = nn.Linear(n_embd, vocab_size)
 
     def forward(self, x, targets = None):
@@ -102,6 +117,7 @@ class BigramLM(nn.Module):
         pos_emb = self.position_embedding_table(torch.arange(T, device=device)) # (b, t, n_embd)
         tok_emb += pos_emb
         x = self.sa_heads(tok_emb)
+        x = self.ffwd(x)
         logits = self.lm_head(x) # (b, t, vocab_size)
 
         if targets is None:
