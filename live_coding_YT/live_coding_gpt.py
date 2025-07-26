@@ -8,6 +8,10 @@ batch_size = 4
 eval_iters = 250
 max_iters = 10000
 eval_interval = 1000
+n_embd = 32
+# n_head = 32
+
+torch.manual_seed(2)
 
 # reading data ---------------------------------------------------------------------
 shakespeare = open('../gpt/input.txt', 'r').read()
@@ -49,14 +53,34 @@ def estimate_loss():
     model.train()
     return out
 
-n_embd = 32
-
 # mdoel class ---------------------------------------------------------------------
+class Head(nn.Module):
+    def __init__(self, head_size):
+        super().__init__()
+        self.query = nn.Linear(n_embd, head_size)
+        self.key = nn.Linear(n_embd, head_size)
+        self.value = nn.Linear(n_embd, head_size)
+        self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))
+
+    def forward(self, x):
+        B,T,C = x.shape
+        q = self.query(x) # (b,t,head_size)
+        k = self.key(x) # (b,t,head_size)
+        v = self.value(x) # (b,t,head_size)
+
+        wei = q @ k.transpose(-2,-1) # (b,t,head_size) @ (b,head_size,t) --> (b,t,t)
+        wei = wei.masked_fill_(self.tril[:T, :T]==0, float('-inf'))
+        wei = F.softmax(wei, dim=-1) # (b,t,t)
+
+        out = wei @ v # (b,t,t) @ (b,t,head_size) --> (b,t,head_size)
+        return out
+
 class BigramLM(nn.Module):
     def __init__(self):
         super().__init__()
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
         self.position_embedding_table = nn.Embedding(block_size, n_embd)
+        self.sa_head = Head(head_size=n_embd)
         self.lm_head = nn.Linear(n_embd, vocab_size)
 
     def forward(self, x, targets = None):
@@ -65,7 +89,8 @@ class BigramLM(nn.Module):
         tok_emb = self.token_embedding_table(x) # (b, t, n_embd)
         pos_emb = self.position_embedding_table(torch.arange(T, device=device)) # (b, t, n_embd)
         tok_emb += pos_emb
-        logits = self.lm_head(tok_emb) # (b, t, vocab_size)
+        x = self.sa_head(tok_emb)
+        logits = self.lm_head(x) # (b, t, vocab_size)
 
         if targets is None:
             loss = None
@@ -93,6 +118,7 @@ class BigramLM(nn.Module):
 
 # model init ---------------------------------------------------------------------
 model = BigramLM()
+print(f'{sum(p.numel() for p in model.parameters())} parameters')
 optimizer = torch.optim.AdamW(params=model.parameters(), lr=1e-3)
 
 # training -----------------------------------------------------------------------
