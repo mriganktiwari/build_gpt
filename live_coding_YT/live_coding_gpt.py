@@ -108,6 +108,8 @@ class BigramLM(nn.Module):
         self.position_embedding_table = nn.Embedding(block_size, n_embd)
         self.sa_heads = MultiHeadedAttention(4, n_embd//4)
         self.ffwd = FeedForward(n_embd)
+        self.ln1 = nn.LayerNorm(n_embd)
+        self.ln2 = nn.LayerNorm(n_embd)
         self.lm_head = nn.Linear(n_embd, vocab_size)
 
     def forward(self, x, targets = None):
@@ -116,8 +118,8 @@ class BigramLM(nn.Module):
         tok_emb = self.token_embedding_table(x) # (b, t, n_embd)
         pos_emb = self.position_embedding_table(torch.arange(T, device=device)) # (b, t, n_embd)
         x = tok_emb + pos_emb
-        x = x + self.sa_heads(x) # residual connections
-        x = x + self.ffwd(x) # residual connections
+        x = self.ln1(x + self.sa_heads(x)) # residual connections
+        x = self.ln2(x + self.ffwd(x)) # residual connections
         logits = self.lm_head(x) # (b, t, vocab_size)
 
         if targets is None:
