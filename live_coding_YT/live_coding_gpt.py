@@ -115,9 +115,9 @@ class BigramLM(nn.Module):
 
         tok_emb = self.token_embedding_table(x) # (b, t, n_embd)
         pos_emb = self.position_embedding_table(torch.arange(T, device=device)) # (b, t, n_embd)
-        tok_emb += pos_emb
-        x = self.sa_heads(tok_emb)
-        x = self.ffwd(x)
+        x = tok_emb + pos_emb
+        x = x + self.sa_heads(x) # residual connections
+        x = x + self.ffwd(x) # residual connections
         logits = self.lm_head(x) # (b, t, vocab_size)
 
         if targets is None:
