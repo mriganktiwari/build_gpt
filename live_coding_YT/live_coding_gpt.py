@@ -4,14 +4,14 @@ import torch.nn.functional as F
 
 # hparams ---------------------------------------------------------------------
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-block_size = 8
-batch_size = 4
+block_size = 256
+batch_size = 128
 eval_iters = 250
 max_iters = 10000
 eval_interval = 1000
-n_embd = 32
-n_heads = 4
-n_layers = 2
+n_embd = 384
+n_heads = 6
+n_layers = 6
 dropout = 0.2
 
 torch.manual_seed(2)
@@ -168,7 +168,7 @@ class GPT(nn.Module):
         return idx
 
 # model init ---------------------------------------------------------------------
-model = BigramLM()
+model = GPT()
 print(f'{sum(p.numel() for p in model.parameters())} parameters')
 optimizer = torch.optim.AdamW(params=model.parameters(), lr=1e-3)
 
