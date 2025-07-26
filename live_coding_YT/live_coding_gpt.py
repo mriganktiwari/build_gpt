@@ -1,14 +1,15 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+# hparams ---------------------------------------------------------------------
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 block_size = 8
 batch_size = 4
 eval_iters = 250
-max_iters = 50000
+max_iters = 10000
 eval_interval = 1000
 
+# reading data ---------------------------------------------------------------------
 shakespeare = open('../gpt/input.txt', 'r').read()
 vocab = sorted(list(set(''.join(shakespeare))))
 vocab_size = len(vocab)
@@ -22,18 +23,18 @@ decode = lambda l: ''.join([itos[i] for i in l])
 
 data = torch.tensor(encode(shakespeare))
 n = int(len(data)*0.9)
-train = data[:n]
-val = data[n:]
+train_data = data[:n]
+val_data = data[n:]
 
-# data loader
-def get_batch(split, bs):
-    d = train if split=='train' else val
+# data loader ---------------------------------------------------------------------
+def get_batch(split):
+    d = train_data if split=='train' else val_data
     ix = torch.randint(0, len(d) - block_size, (batch_size,))
     xb = torch.stack([d[i   : i +   block_size] for i in ix], dim=0)
     yb = torch.stack([d[i+1 : i+1 + block_size] for i in ix], dim=0)
     return xb.to(device), yb.to(device)
 
-# estimate loss
+# estimate loss -------------------------------------------------------------------
 @torch.no_grad()
 def estimate_loss():
     out = {}
@@ -41,7 +42,7 @@ def estimate_loss():
     for split in ['train', 'val']:
         losses = torch.zeros(eval_iters)
         for k in range(eval_iters):
-            x, y = get_batch(split, bs=batch_size)
+            x, y = get_batch(split)
             _, loss = model(x, y)
             losses[k] = loss.item()
         out[split] = losses.mean()
@@ -50,7 +51,7 @@ def estimate_loss():
 
 n_embd = 32
 
-# mdoel class
+# mdoel class ---------------------------------------------------------------------
 class BigramLM(nn.Module):
     def __init__(self):
         super().__init__()
@@ -84,18 +85,18 @@ class BigramLM(nn.Module):
             idx = torch.cat((idx, idx_new), dim=-1) # (b, t+1)
         return idx
 
-# model init
+# model init ---------------------------------------------------------------------
 model = BigramLM()
 optimizer = torch.optim.AdamW(params=model.parameters(), lr=1e-3)
 
-
+# training -----------------------------------------------------------------------
 for iter in range(max_iters):
-    lr = 1e-3 if iter < 10000 else 1e-4
-    for param_group in optimizer.param_groups:
-        param_group['lr'] = lr
+    # lr = 1e-3 if iter < 10000 else 1e-4
+    # for param_group in optimizer.param_groups:
+    #     param_group['lr'] = lr
     
     # get a batch
-    xb, yb = get_batch('train', bs=batch_size)
+    xb, yb = get_batch('train')
 
     # forward pass
     logits, loss = model(xb, yb)
@@ -109,6 +110,6 @@ for iter in range(max_iters):
     loss.backward()
     optimizer.step()
 
-# generate with trained model
+# generation ---------------------------------------------------------------------
 idx = torch.zeros((1,1), dtype=torch.long)
 print(decode(model.generate(idx)[0].tolist()))
