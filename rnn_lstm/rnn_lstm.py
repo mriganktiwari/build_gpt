@@ -190,7 +190,7 @@ for iter in range(max_iters):
         print(f'Iteration {iter} train loss = {losses['train']:.4f} | val loss = {losses['val']:.4f} | Gradient norm: {total_norm:.4f}')
 
     # weights update
-    lr = 0.1 #if iter < 20000 else 0.01
+    lr = 0.1 if iter < 20000 else 0.01
     for p in model.parameters:
         p.data += -(lr * p.grad)
 
