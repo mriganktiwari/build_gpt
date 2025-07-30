@@ -17,10 +17,10 @@ val_words = words[n:]
 
 # hparams
 batch_size = 64
-n_embd = 128
+n_embd = 64
 hidden_dim = 128
-max_iters = 10000
-n_layers = 3
+max_iters = 20000
+n_layers = 2
 eval_iters = 250
 eval_interval = 1000
 
@@ -102,25 +102,95 @@ class MultiLayerRNN:
         logits = torch.stack(logits, dim=1) # (b, T, vocab_size)
         return logits
 
+class SimpleLSTM:
+    def __init__(self, n_embd=n_embd, hidden_dim=hidden_dim, n_layers=1):
+        self.n_embd = n_embd
+        self.hidden_dim = hidden_dim
+
+        self.emb_layer = torch.randn((vocab_size, n_embd)) * 0.1
+
+        # forget gate
+        self.wxf = torch.randn(n_embd, hidden_dim) * 0.01
+        self.whf = torch.randn(hidden_dim, hidden_dim) * 0.01
+        self.bf  = torch.zeros(hidden_dim)
+
+        # input gate
+        self.wxi = torch.randn(n_embd, hidden_dim) * 0.01
+        self.whi = torch.randn(hidden_dim, hidden_dim) * 0.01
+        self.bi  = torch.zeros(hidden_dim)
+
+        # cell candidate gate
+        self.wxg = torch.randn(n_embd, hidden_dim) * 0.01
+        self.whg = torch.randn(hidden_dim, hidden_dim) * 0.01
+        self.bg  = torch.zeros(hidden_dim)
+
+        # output gate
+        self.wxo = torch.randn(n_embd, hidden_dim) * 0.01
+        self.who = torch.randn(hidden_dim, hidden_dim) * 0.01
+        self.bo  = torch.zeros(hidden_dim)
+
+        self.why = torch.randn(hidden_dim, vocab_size) * 0.01
+        self.by  = torch.zeros(vocab_size)
+
+        self.parameters = [
+            self.emb_layer,
+            self.wxf, self.whf, self.bf,
+            self.wxi, self.whi, self.bi,
+            self.wxg, self.whg, self.bg,
+            self.wxo, self.who, self.bo,
+            self.why, self.by
+        ]
+
+        for p in self.parameters:
+            p.requires_grad = True
+
+    def __call__(self, x):
+        # x: (b,t)
+        B,T = x.shape
+        h = torch.zeros(B, self.hidden_dim) # hidden state (b,h)
+        c = torch.zeros(B, hidden_dim) # cell state (b,h)
+
+        x_emb = self.emb_layer[x] # (b,t,n_embd)
+        logits = []
+        for t in range(T):
+            xt = x_emb[:, t, :] # (b,n_embd)
+            ft = torch.sigmoid(xt @ self.wxf + h @ self.whf + self.bf) # (b,h)
+            it = torch.sigmoid(xt @ self.wxi + h @ self.whi + self.bi) # (b,h)
+            gt = torch.tanh(   xt @ self.wxg + h @ self.whg + self.bg) # (b,h)
+            ot = torch.sigmoid(xt @ self.wxo + h @ self.who + self.bo) # (b,h)
+
+            c = (ft * c) + (it * gt)
+            h = ot * torch.tanh(c)
+
+            yt = h @ self.why + self.by # (b,vocab_size)
+            logits.append(yt) # list of T elements of shape (b,vocab_size)
+        return torch.stack(logits, dim=1) # (b,T,h)
+
+
 # model init
-model = MultiLayerRNN()
+model = SimpleLSTM()
 print(f'{sum(p.numel() for p in model.parameters)} params')
 
+# model training
 for iter in range(max_iters):
     xb, yb = get_batch('train')
     logits = model(xb)
     loss = F.cross_entropy(logits.view(-1, vocab_size), yb.view(-1), ignore_index=-1)
 
+    # zero the gradients
     for p in model.parameters:
         p.grad = None
 
     loss.backward()
+
+    # print loss
     if iter % eval_interval == 0:
         losses = estimate_loss()
         total_norm = torch.sqrt(sum((p.grad**2).sum() for p in model.parameters if p.grad is not None))
         print(f'Iteration {iter} train loss = {losses['train']:.4f} | val loss = {losses['val']:.4f} | Gradient norm: {total_norm:.4f}')
 
-    lr = 0.1 if iter < 4000 else 0.01
+    # weights update
+    lr = 0.1 #if iter < 20000 else 0.01
     for p in model.parameters:
         p.data += -(lr * p.grad)
 
