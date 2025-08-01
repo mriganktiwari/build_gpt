@@ -3,3 +3,4 @@ trials.ipynb
 makemore_karpathy.py
 test_parsing.py
 **/__pycache__/
+minbpe/models/
