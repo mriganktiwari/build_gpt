@@ -2,13 +2,13 @@ import unicodedata
 
 # few helper functions to help with training tokenizer
 
-def get_stats(ids):
+def get_stats(ids, counts=None):
     """
     inp: list of indices
     out: dictionary of pairs of indices and their occurence counts, in descending order
     example: [1,2,3,1,2] -> {(1,2):2, (2,3):1, (3,1):1}
     """
-    counts = {}
+    counts = {} if counts is None else counts
     for ch1, ch2 in zip(ids, ids[1:]):
         pair = (ch1, ch2)
         counts[pair] = counts.get(pair, 0) + 1

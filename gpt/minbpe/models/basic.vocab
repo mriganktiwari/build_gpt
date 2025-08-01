@@ -254,259 +254,259 @@
 [�] -> 253
 [�] -> 254
 [�] -> 255
-[e][ ] -> [e ] 256
-[,][ ] -> [, ] 257
-[d][ ] -> [d ] 258
-[.][ ] -> [. ] 259
-[r][ ] -> [r ] 260
-[2][0] -> [20] 261
-[s][ ] -> [s ] 262
-[i][n] -> [in] 263
-[o][n] -> [on] 264
-[r][i] -> [ri] 265
-[t][ ] -> [t ] 266
-[t][h] -> [th] 267
-[e][d ] -> [ed ] 268
-[, ][20] -> [, 20] 269
-[a][n] -> [an] 270
-[a][r] -> [ar] 271
-[e][r ] -> [er ] 272
-[y][ ] -> [y ] 273
-[a][l] -> [al] 274
-[th][e ] -> [the ] 275
-[v][ed ] -> [ved ] 276
-[w][i] -> [wi] 277
-[e][r] -> [er] 278
-[on][ ] -> [on ] 279
-[wi][f] -> [wif] 280
-[R][e] -> [Re] 281
-[S][wif] -> [Swif] 282
-[o][r ] -> [or ] 283
-[c][h] -> [ch] 284
-[, 20][1] -> [, 201] 285
-[o][m] -> [om] 286
-[b][er ] -> [ber ] 287
-[ ][the ] -> [ the ] 288
-[a][y] -> [ay] 289
+[e][r] -> [er] 256
+[2][0] -> [20] 257
+[o][r] -> [or] 258
+[i][n] -> [in] 259
+[e][d] -> [ed] 260
+[ ][t] -> [ t] 261
+[o][n] -> [on] 262
+[h][e] -> [he] 263
+[ ][S] -> [ S] 264
+[a][r] -> [ar] 265
+[a][n] -> [an] 266
+[ ][A] -> [ A] 267
+[ t][he] -> [ the] 268
+[a][l] -> [al] 269
+[r][i] -> [ri] 270
+[v][ed] -> [ved] 271
+[s][t] -> [st] 272
+[w][i] -> [wi] 273
+[ ][R] -> [ R] 274
+[20][1] -> [201] 275
+[ ][f] -> [ f] 276
+[20][2] -> [202] 277
+[ ][T] -> [ T] 278
+[f][t] -> [ft] 279
+[a][y] -> [ay] 280
+[ ]["] -> [ "] 281
+[wi][ft] -> [wift] 282
+[e][t] -> [et] 283
+[ S][wift] -> [ Swift] 284
+[c][h] -> [ch] 285
+[b][er] -> [ber] 286
+[a][t] -> [at] 287
+[o][m] -> [om] 288
+[e][s] -> [es] 289
 [e][n] -> [en] 290
-[o][r] -> [or] 291
-[al][ ] -> [al ] 292
-[e][m] -> [em] 293
+[e][m] -> [em] 291
+["][.] -> [".] 292
+[ ][(] -> [ (] 293
 [.][\u000a] -> [.\u000a] 294
-[ri][e] -> [rie] 295
-[in][g] -> [ing] 296
-[, 20][2] -> [, 202] 297
-[t][i] -> [ti] 298
-[ay][l] -> [ayl] 299
-["][. ] -> [". ] 300
+[in][g] -> [ing] 295
+[l][or] -> [lor] 296
+[ ][M] -> [ M] 297
+[i][g] -> [ig] 298
+[ ][on] -> [ on] 299
+[ay][lor] -> [aylor] 300
 [l][l] -> [ll] 301
-[T][ayl] -> [Tayl] 302
-[t][rie] -> [trie] 303
-[.\u000a][ ] -> [.\u000a ] 304
-[t][o] -> [to] 305
-[. ][Re] -> [. Re] 306
-[. Re][trie] -> [. Retrie] 307
-[. Retrie][ved ] -> [. Retrieved ] 308
-[Tayl][or ] -> [Taylor ] 309
-[e][s] -> [es] 310
-[Taylor ][Swif] -> [Taylor Swif] 311
-[u][s] -> [us] 312
+[ri][e] -> [rie] 302
+[ R][et] -> [ Ret] 303
+[ Ret][rie] -> [ Retrie] 304
+[ Retrie][ved] -> [ Retrieved] 305
+[ ][s] -> [ s] 306
+[i][c] -> [ic] 307
+[an][d] -> [and] 308
+[o][u] -> [ou] 309
+[e][c] -> [ec] 310
+[ ][a] -> [ a] 311
+[)][.] -> [).] 312
 [r][om] -> [rom] 313
-[em][ber ] -> [ember ] 314
-[)][. ] -> [). ] 315
-[A][r] -> [Ar] 316
-[f][rom] -> [from] 317
-[). ]["] -> [). "] 318
-[an][d ] -> [and ] 319
-[r][e] -> [re] 320
-[o][u] -> [ou] 321
-[o][ri] -> [ori] 322
-[o][f] -> [of] 323
-[g][in] -> [gin] 324
-[ing][ ] -> [ing ] 325
-[ch][i] -> [chi] 326
-[]][ ] -> [] ] 327
-[gin][al ] -> [ginal ] 328
-[from][ the ] -> [from the ] 329
-[ori][ginal ] -> [original ] 330
-[h][e ] -> [he ] 331
-[Ar][chi] -> [Archi] 332
-[Archi][ved ] -> [Archived ] 333
-[from the ][original ] -> [from the original ] 334
-[Archived ][from the original ] -> [Archived from the original ] 335
-[Archived from the original ][on ] -> [Archived from the original on ] 336
-[. ][Archived from the original on ] -> [. Archived from the original on ] 337
-[a][ ] -> [a ] 338
-[s][t] -> [st] 339
-[i][c] -> [ic] 340
-[.][[] -> [.[] 341
-[e][c] -> [ec] 342
-[i][ll] -> [ill] 343
-['][s ] -> ['s ] 344
-[Taylor Swif][t ] -> [Taylor Swift ] 345
-[o][v] -> [ov] 346
-[a][t] -> [at] 347
-[a][s ] -> [as ] 348
-[e][s ] -> [es ] 349
-[J][u] -> [Ju] 350
-[of][ ] -> [of ] 351
-[to][ ] -> [to ] 352
-[u][m] -> [um] 353
-[T][he ] -> [The ] 354
-[ar][d] -> [ard] 355
-[in][ ] -> [in ] 356
-[an][ ] -> [an ] 357
-[e][l] -> [el] 358
-[, 202][3] -> [, 2023] 359
-[ar][y ] -> [ary ] 360
-[th][ ] -> [th ] 361
-[a][m] -> [am] 362
-[l][y ] -> [ly ] 363
-[o][p] -> [op] 364
-[Taylor Swif][t] -> [Taylor Swift] 365
-[t][r] -> [tr] 366
-[i][s] -> [is] 367
-[h][er ] -> [her ] 368
-[o][ ] -> [o ] 369
-[u][ary ] -> [uary ] 370
-[N][ov] -> [Nov] 371
-[us][ic] -> [usic] 372
-[Nov][ember ] -> [November ] 373
-[e][w] -> [ew] 374
-[a][t ] -> [at ] 375
-[l][ ] -> [l ] 376
-[:][ ] -> [: ] 377
-[b][o] -> [bo] 378
-[Swif][t ] -> [Swift ] 379
-[D][ec] -> [Dec] 380
-[i][t] -> [it] 381
-[i][g] -> [ig] 382
-[B][ill] -> [Bill] 383
-[1][0] -> [10] 384
-[a][s] -> [as] 385
+[ ][B] -> [ B] 314
+[em][ber] -> [ember] 315
+[ ][o] -> [ o] 316
+[ f][rom] -> [ from] 317
+[ A][r] -> [ Ar] 318
+[ ][and] -> [ and] 319
+[ ][C] -> [ C] 320
+[ ][N] -> [ N] 321
+[ ][or] -> [ or] 322
+[ch][i] -> [chi] 323
+[ ][J] -> [ J] 324
+[in][al] -> [inal] 325
+[ or][ig] -> [ orig] 326
+[ orig][inal] -> [ original] 327
+[ Ar][chi] -> [ Archi] 328
+[ Archi][ved] -> [ Archived] 329
+[ o][f] -> [ of] 330
+[ ][h] -> [ h] 331
+[ ][in] -> [ in] 332
+[r][e] -> [re] 333
+[T][aylor] -> [Taylor] 334
+[i][t] -> [it] 335
+[a][s] -> [as] 336
+[ ][p] -> [ p] 337
+[i][on] -> [ion] 338
+[ ][D] -> [ D] 339
+[ ][w] -> [ w] 340
+[ar][d] -> [ard] 341
+[i][ll] -> [ill] 342
+['][s] -> ['s] 343
+[ ][m] -> [ m] 344
+[ ][F] -> [ F] 345
+[ ][W] -> [ W] 346
+[l][e] -> [le] 347
+[ t][o] -> [ to] 348
+[ ][c] -> [ c] 349
+[.][[] -> [.[] 350
+[o][v] -> [ov] 351
+[l][y] -> [ly] 352
+[u][s] -> [us] 353
+[ ][H] -> [ H] 354
+[i][s] -> [is] 355
+[ ][P] -> [ P] 356
+[t][h] -> [th] 357
+[c][t] -> [ct] 358
+[u][m] -> [um] 359
+[ ][b] -> [ b] 360
+[ ][G] -> [ G] 361
+[ar][y] -> [ary] 362
+[ ][I] -> [ I] 363
+[ T][aylor] -> [ Taylor] 364
+[i][st] -> [ist] 365
+[ ][d] -> [ d] 366
+[a][m] -> [am] 367
+[ ][O] -> [ O] 368
+[o][p] -> [op] 369
+[ J][u] -> [ Ju] 370
+[ h][er] -> [ her] 371
+[ ][L] -> [ L] 372
+[u][st] -> [ust] 373
+[a][d] -> [ad] 374
+[ T][he] -> [ The] 375
+[u][ary] -> [uary] 376
+[en][t] -> [ent] 377
+[us][ic] -> [usic] 378
+[ov][ember] -> [ovember] 379
+[e][w] -> [ew] 380
+[er][s] -> [ers] 381
+[ar][t] -> [art] 382
+[i][d] -> [id] 383
+[ ][E] -> [ E] 384
+[e][l] -> [el] 385
 [on][g] -> [ong] 386
-[O][c] -> [Oc] 387
-[a][ti] -> [ati] 388
-[S][t] -> [St] 389
-[Oc][to] -> [Octo] 390
-[Octo][ber ] -> [October ] 391
-[a][c] -> [ac] 392
-[o][w] -> [ow] 393
-[Dec][ember ] -> [December ] 394
-[Bill][bo] -> [Billbo] 395
-[a][d] -> [ad] 396
-[l][e] -> [le] 397
-[u][r] -> [ur] 398
-[f][or ] -> [for ] 399
-[ ][(] -> [ (] 400
-[, 202][2] -> [, 2022] 401
-[u][g] -> [ug] 402
-[ch][ ] -> [ch ] 403
-[s][t ] -> [st ] 404
-[ou][n] -> [oun] 405
-[b][um] -> [bum] 406
-[o][l] -> [ol] 407
-[us][t ] -> [ust ] 408
-[e][b] -> [eb] 409
-[M][a] -> [Ma] 410
-[Ju][ly ] -> [July ] 411
-[). "][Taylor Swift ] -> [). "Taylor Swift ] 412
-[k][ ] -> [k ] 413
-[er][s] -> [ers] 414
+[i][m] -> [im] 387
+[o][ber] -> [ober] 388
+[e][p] -> [ep] 389
+[ f][or] -> [ for] 390
+[ct][ober] -> [ctober] 391
+[b][o] -> [bo] 392
+[ B][ill] -> [ Bill] 393
+[ec][ember] -> [ecember] 394
+[ S][t] -> [ St] 395
+[bo][ard] -> [board] 396
+[o][w] -> [ow] 397
+[u][g] -> [ug] 398
+[o][t] -> [ot] 399
+[ Bill][board] -> [ Billboard] 400
+[1][0] -> [10] 401
+[n][t] -> [nt] 402
+[n][e] -> [ne] 403
+[e][ar] -> [ear] 404
+[ou][r] -> [our] 405
+[ri][t] -> [rit] 406
+[i][r] -> [ir] 407
+[b][um] -> [bum] 408
+[u][r] -> [ur] 409
+[at][ion] -> [ation] 410
+[20][0] -> [200] 411
+[o][l] -> [ol] 412
+[es][s] -> [ess] 413
+[ ][r] -> [ r] 414
 []][[] -> [][] 415
-[A][ug] -> [Aug] 416
-[Aug][ust ] -> [August ] 417
-[i][d] -> [id] 418
-[, 202][1] -> [, 2021] 419
-[m][e] -> [me] 420
-[e][p] -> [ep] 421
-[20][1] -> [201] 422
-[2][3] -> [23] 423
-[, 201][2] -> [, 2012] 424
-[e][ar] -> [ear] 425
-[, 20][20] -> [, 2020] 426
-[I][n] -> [In] 427
-[f][i] -> [fi] 428
-[n][e ] -> [ne ] 429
-[Billbo][ard] -> [Billboard] 430
-[ri][t] -> [rit] 431
-[h][i] -> [hi] 432
-[usic][ ] -> [usic ] 433
-[.\u000a ]["] -> [.\u000a "] 434
-[N][ew] -> [New] 435
-[d][i] -> [di] 436
-[A][p] -> [Ap] 437
-[, 201][9] -> [, 2019] 438
-[r][o] -> [ro] 439
-['][ ] -> [' ] 440
-[s][, ] -> [s, ] 441
-[Ju][ne ] -> [June ] 442
-[of][ the ] -> [of the ] 443
-[c][or] -> [cor] 444
-[2][1] -> [21] 445
-[1][9] -> [19] 446
-[i][m] -> [im] 447
-[en][ ] -> [en ] 448
-[eb][r] -> [ebr] 449
-[en][t] -> [ent] 450
-[o][ll] -> [oll] 451
-[M][ar] -> [Mar] 452
-[ri][c] -> [ric] 453
-[wi][th ] -> [with ] 454
-[,][[] -> [,[] 455
-[F][ebr] -> [Febr] 456
-[Febr][uary ] -> [February ] 457
-[Taylor Swift]['s ] -> [Taylor Swift's ] 458
-[". ][Billboard] -> [". Billboard] 459
-[e][a] -> [ea] 460
-[, 201][6] -> [, 2016] 461
-[ep][t] -> [ept] 462
-[Ma][y ] -> [May ] 463
-[, 201][5] -> [, 2015] 464
-[Ap][ri] -> [Apri] 465
-[Apri][l ] -> [April ] 466
-[l][e ] -> [le ] 467
-[A][w] -> [Aw] 468
-[ati][on] -> [ation] 469
-[S][ept] -> [Sept] 470
-[Sept][ember ] -> [September ] 471
-[r][a] -> [ra] 472
-[al][bum] -> [album] 473
-[C][h] -> [Ch] 474
-[v][e ] -> [ve ] 475
-[es][t ] -> [est ] 476
-[J][an] -> [Jan] 477
-[2][2] -> [22] 478
-[Jan][uary ] -> [January ] 479
-[oun][tr] -> [ountr] 480
-[ig][h] -> [igh] 481
-[". ][The ] -> [". The ] 482
-[, 2023][.\u000a ] -> [, 2023.\u000a ] 483
-[1][3] -> [13] 484
-[A][l] -> [Al] 485
-[e][t] -> [et] 486
-[es][s] -> [ess] 487
-[Mar][ch ] -> [March ] 488
-[u][t] -> [ut] 489
-[w][rit] -> [writ] 490
-[l][o] -> [lo] 491
-[s][ong] -> [song] 492
-[�][�] -> [�] 493
-[ar][d ] -> [ard ] 494
-[0][ ] -> [0 ] 495
-[u][l] -> [ul] 496
-[2][4] -> [24] 497
-[i][s ] -> [is ] 498
-[ti][c] -> [tic] 499
-[a][g] -> [ag] 500
-["][ ] -> [" ] 501
-[A][n] -> [An] 502
-[1][8] -> [18] 503
-[f][or] -> [for] 504
-[ountr][y ] -> [ountry ] 505
-[A][me] -> [Ame] 506
-[Ame][ric] -> [Americ] 507
-[ ][T] -> [ T] 508
-[s][ing] -> [sing] 509
-[w][as ] -> [was ] 510
-[1][2] -> [12] 511
+[ug][ust] -> [ugust] 416
+[ ][V] -> [ V] 417
+[ ]['] -> [ '] 418
+[e][b] -> [eb] 419
+[ ][al] -> [ al] 420
+[i][v] -> [iv] 421
+[ ][Y] -> [ Y] 422
+[u][t] -> [ut] 423
+[ ][wi] -> [ wi] 424
+[r][y] -> [ry] 425
+[e][st] -> [est] 426
+[ wi][th] -> [ with] 427
+[r][a] -> [ra] 428
+[ D][ecember] -> [ December] 429
+[ N][ovember] -> [ November] 430
+[ ][at] -> [ at] 431
+[ ][re] -> [ re] 432
+[ Ju][ly] -> [ July] 433
+[ t][h] -> [ th] 434
+[ ][n] -> [ n] 435
+[ A][ugust] -> [ August] 436
+[or][d] -> [ord] 437
+[w][ard] -> [ward] 438
+[1][9] -> [19] 439
+[ ][K] -> [ K] 440
+[ O][ctober] -> [ October] 441
+[ ][l] -> [ l] 442
+[o][ll] -> [oll] 443
+[p][ri] -> [pri] 444
+[u][l] -> [ul] 445
+[ep][t] -> [ept] 446
+[ M][usic] -> [ Music] 447
+[ ][U] -> [ U] 448
+[o][s] -> [os] 449
+[eb][r] -> [ebr] 450
+[ a][s] -> [ as] 451
+[n][d] -> [nd] 452
+[,][[] -> [,[] 453
+[ebr][uary] -> [ebruary] 454
+[ N][ew] -> [ New] 455
+[ ][st] -> [ st] 456
+[o][d] -> [od] 457
+[a][k] -> [ak] 458
+[pri][l] -> [pril] 459
+[ou][nt] -> [ount] 460
+[ C][h] -> [ Ch] 461
+[c][e] -> [ce] 462
+[ept][ember] -> [eptember] 463
+[ al][bum] -> [ album] 464
+[i][l] -> [il] 465
+[ A][ward] -> [ Award] 466
+[ec][ord] -> [ecord] 467
+[an][uary] -> [anuary] 468
+[1][3] -> [13] 469
+[ount][ry] -> [ountry] 470
+[m][er] -> [mer] 471
+[on][e] -> [one] 472
+[ ][g] -> [ g] 473
+[2][1] -> [21] 474
+[ar][ch] -> [arch] 475
+[o][c] -> [oc] 476
+[ec][t] -> [ect] 477
+[i][a] -> [ia] 478
+[v][er] -> [ver] 479
+[�][�] -> [�] 480
+[ S][he] -> [ She] 481
+[ M][ay] -> [ May] 482
+[ A][l] -> [ Al] 483
+[2][3] -> [23] 484
+[ Ju][ne] -> [ June] 485
+[ m][usic] -> [ music] 486
+[1][8] -> [18] 487
+[ T][im] -> [ Tim] 488
+[iv][e] -> [ive] 489
+[ F][ebruary] -> [ February] 490
+[e][e] -> [ee] 491
+[i][an] -> [ian] 492
+[2][4] -> [24] 493
+[mer][ic] -> [meric] 494
+[1][2] -> [12] 495
+[ S][eptember] -> [ September] 496
+[ s][ing] -> [ sing] 497
+[ ][v] -> [ v] 498
+[ w][as] -> [ was] 499
+[ A][pril] -> [ April] 500
+[1][7] -> [17] 501
+[2][2] -> [22] 502
+[o][g] -> [og] 503
+[w][rit] -> [writ] 504
+[N][ovember] -> [November] 505
+[ s][ong] -> [ song] 506
+[1][4] -> [14] 507
+[ig][h] -> [igh] 508
+[l][d] -> [ld] 509
+[]][\u000a] -> []\u000a] 510
+[ s][he] -> [ she] 511
