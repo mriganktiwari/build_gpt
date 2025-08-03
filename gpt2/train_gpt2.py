@@ -84,19 +84,22 @@ class GPT(nn.Module):
         ))
         self.lm_head = nn.Linear(config.n_embd, config.vocab_size, bias=False)
 
-    def forward(self, x):
-        # x shape: (b,t)
-        B,T = x.size()
+    def forward(self, idx, targets=None):
+        # idx shape: (b,t)
+        B,T = idx.size()
         assert T <= self.config.block_size
-        pos = torch.arange(0, T, dtype=torch.long, device=x.device)
+        pos = torch.arange(0, T, dtype=torch.long, device=idx.device)
         pos_emb = self.transformer.wpe(pos) # (b,t,n_embd)
-        tok_emb = self.transformer.wte(x)   # (b,t,n_embd)
+        tok_emb = self.transformer.wte(idx)   # (b,t,n_embd)
         x = tok_emb + pos_emb
         for block in self.transformer.h:
             x = block(x)
         x = self.transformer.ln_f(x)
         logits = self.lm_head(x) # (b,t,vocab_size)
-        return logits
+        loss = None
+        if targets is not None:
+            loss = F.cross_entropy(logits.view(B*T, -1), targets.view(B*T))
+        return logits, loss
 
     @classmethod
     def from_pretrained(cls, model_type):
@@ -170,8 +173,8 @@ y = buf[1:].view(B,T).to(device)
 # model = GPT.from_pretrained('gpt2')
 model = GPT(GPTConfig())
 model = model.to(device)
-logits = model(x)
-print(f'Logits shape: {logits.shape}')
+logits, loss = model(x, y)
+print(loss)
 sys.exit()
 
 # create prefix tokens
