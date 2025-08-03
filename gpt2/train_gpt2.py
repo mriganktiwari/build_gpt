@@ -11,6 +11,7 @@ class GPTConfig:
     n_layer: int = 12
     n_head: int = 12
     n_embd: int = 768
+    device: str = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 class CausalAttention(nn.Module):
     def __init__(self, config):
@@ -81,6 +82,20 @@ class GPT(nn.Module):
         ))
         self.lm_head = nn.Linear(config.n_embd, config.vocab_size, bias=False)
 
+    def forward(self, x):
+        # x shape: (b,t)
+        B,T = x.size()
+        assert T <= self.config.block_size
+        pos = torch.arange(0, T, dtype=torch.long)
+        pos_emb = self.transformer.wpe(pos) # (b,t,n_embd)
+        tok_emb = self.transformer.wte(x)   # (b,t,n_embd)
+        x = tok_emb + pos_emb
+        for block in self.transformer.h:
+            x = block(x)
+        x = self.transformer.ln_f(x)
+        logits = self.lm_head(x) # (b,t,vocab_size)
+        return logits
+
     @classmethod
     def from_pretrained(cls, model_type):
         # loads HF pretrained model weights for gpt2
@@ -97,6 +112,7 @@ class GPT(nn.Module):
         }[model_type]
         config_args['vocab_size'] = 50257
         config_args['block_size'] = 1024
+        config_args['device'] = 'cuda' if torch.cuda.is_available() else 'cpu'
 
         # create a from scratch initialized gpt2 model
         config = GPTConfig(**config_args)
@@ -128,5 +144,38 @@ class GPT(nn.Module):
         return model
 
 # --------------------------------------------------------------------
+
+max_return_sequences = 5
+max_length = 30
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
 model = GPT.from_pretrained('gpt2')
-print("didn't crash yay!")
+model.eval()
+model.to(device)
+
+# create prefix tokens
+import tiktoken
+enc = tiktoken.get_encoding('gpt2')
+tokens = enc.encode("Hello, I'm a language model,")
+tokens = torch.tensor(tokens, dtype=torch.long) # (8,)
+tokens = tokens.unsqueeze(0).repeat(max_return_sequences, 1) # (5,8)
+x = tokens.to(device=device)
+
+# generate
+torch.manual_seed(42)
+while x.size(1) <= max_length:
+    with torch.no_grad():
+        logits = model(x) # (b,t,vocab_size)
+        logits = logits[:, -1, :] # (b,vocab_size)
+        probs = F.softmax(logits, dim=-1)
+        topk_probs, topk_indices = torch.topk(probs, 50, dim=-1)
+        ix = torch.multinomial(topk_probs, 1) # (b, 1)
+        # look up the real vocabulary token from topk_indices
+        xcol = torch.gather(topk_indices, -1, ix) # (b,1)
+        x = torch.cat((x,xcol), dim=1) # (b,t+1)
+
+# print the generated text
+for i in range(max_return_sequences):
+    tokens = x[i, :max_length].tolist() # (max_length,)
+    decoded = enc.decode(tokens)
+    print("> ", decoded)
