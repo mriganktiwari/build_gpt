@@ -86,7 +86,7 @@ class GPT(nn.Module):
         # x shape: (b,t)
         B,T = x.size()
         assert T <= self.config.block_size
-        pos = torch.arange(0, T, dtype=torch.long)
+        pos = torch.arange(0, T, dtype=torch.long, device=x.device)
         pos_emb = self.transformer.wpe(pos) # (b,t,n_embd)
         tok_emb = self.transformer.wte(x)   # (b,t,n_embd)
         x = tok_emb + pos_emb
@@ -147,11 +147,17 @@ class GPT(nn.Module):
 
 max_return_sequences = 5
 max_length = 30
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+device = 'cpu'
+if torch.cuda.is_available():
+    device = 'cuda'
+elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+    device = 'mps'
+print(f'using device: {device}')
 
-model = GPT.from_pretrained('gpt2')
+# model = GPT.from_pretrained('gpt2')
+model = GPT(GPTConfig())
 model.eval()
-model.to(device)
+model = model.to(device)
 
 # create prefix tokens
 import tiktoken
@@ -159,7 +165,7 @@ enc = tiktoken.get_encoding('gpt2')
 tokens = enc.encode("Hello, I'm a language model,")
 tokens = torch.tensor(tokens, dtype=torch.long) # (8,)
 tokens = tokens.unsqueeze(0).repeat(max_return_sequences, 1) # (5,8)
-x = tokens.to(device=device)
+x = tokens.to(device)
 
 # generate
 torch.manual_seed(42)
