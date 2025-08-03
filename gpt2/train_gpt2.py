@@ -1,8 +1,10 @@
+import sys
 import math
 from dataclasses import dataclass
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import tiktoken
 
 @dataclass
 class GPTConfig:
@@ -154,13 +156,25 @@ elif hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
     device = 'mps'
 print(f'using device: {device}')
 
+# data loader
+enc = tiktoken.get_encoding('gpt2')
+with open('../gpt/input.txt', 'r') as f:
+    text = f.read()
+text = text[:1000]
+tokens = enc.encode(text)
+B,T = 4,32
+buf = torch.tensor(tokens[: B*T + 1])
+x = buf[:-1].view(B,T).to(device)
+y = buf[1:].view(B,T).to(device)
+
 # model = GPT.from_pretrained('gpt2')
 model = GPT(GPTConfig())
-model.eval()
 model = model.to(device)
+logits = model(x)
+print(f'Logits shape: {logits.shape}')
+sys.exit()
 
 # create prefix tokens
-import tiktoken
 enc = tiktoken.get_encoding('gpt2')
 tokens = enc.encode("Hello, I'm a language model,")
 tokens = torch.tensor(tokens, dtype=torch.long) # (8,)
