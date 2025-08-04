@@ -87,6 +87,18 @@ class GPT(nn.Module):
         # weight tying
         self.transformer.wte.weight = self.lm_head.weight
 
+        # init params
+        # nn.Module.apply(fn): does a recursive depth-first traversal over the module and its submodules
+        self.apply(self._init_weights)
+
+    def _init_weights(self, module):
+        if isinstance(module, nn.Linear):
+            torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
+            if module.bias is not None:
+                torch.nn.init.zeros_(module.bias)
+        elif isinstance(module, nn.Embedding):
+            torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
+
     def forward(self, idx, targets=None):
         # idx shape: (b,t)
         B,T = idx.size()
