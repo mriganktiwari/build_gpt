@@ -173,8 +173,17 @@ y = buf[1:].view(B,T).to(device)
 # model = GPT.from_pretrained('gpt2')
 model = GPT(GPTConfig())
 model = model.to(device)
-logits, loss = model(x, y)
-print(loss)
+
+# forward, backward, optimize
+optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3) # 3e-4
+for i in range(50):
+    optimizer.zero_grad()
+    logits, loss = model(x, y)
+    loss.backward()
+    optimizer.step()
+    print(f'step {i} | loss {loss.item():4f}')
+
+
 sys.exit()
 
 # create prefix tokens
