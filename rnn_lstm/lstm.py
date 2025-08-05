@@ -17,7 +17,7 @@ train_words = words[:n]
 val_words = words[n:]
 
 # hparams
-batch_size = 64
+batch_size = 256
 n_embd = 64
 hidden_dim = 128
 max_iters = 20000
@@ -52,6 +52,7 @@ def estimate_loss():
         losses = torch.zeros(eval_iters)
         for k in range(eval_iters):
             x, y = get_batch(split)
+            x, y = x.to(device), y.to(device)
             logits = model(x)
             loss = F.cross_entropy(logits.view(-1, vocab_size), y.view(-1), ignore_index=-1)
             losses[k] = loss.item()
@@ -92,7 +93,7 @@ class LSTMCell(nn.Module):
         return h_t, c_t
     
 class MultiLayerLSTM(nn.Module):
-    def __init__(self, vocab_size, n_layers, input_size, hidden_size, dropout = 0.2, ):
+    def __init__(self, vocab_size, n_layers, input_size, hidden_size, dropout = 0.2):
         super().__init__()
         self.vocab_size = vocab_size
         self.input_size = input_size
@@ -124,38 +125,96 @@ class MultiLayerLSTM(nn.Module):
             cs = torch.zeros(self.num_layers, B, self.hidden_size, device=x.device)
 
         logits = []
-        x = self.emb_layer[x] # (b,t,n)
+        x_emb = self.emb_layer[x] # (b,t,n)
         for t in range(T):
-            xt = x[:, t, :] # (b,n)
+            # We'll build new tensors for the states
+            new_hs = torch.zeros_like(hs, device=x.device)
+            new_cs = torch.zeros_like(cs, device=x.device)
+
+            xt = x_emb[:, t, :] # (b,n)
             for layer in range(self.num_layers):
                 h_prev_layer = hs[layer]
                 c_prev_layer = cs[layer]
 
-                h_new, c_new = self.lstm_cells[layer](xt, (h_prev_layer, c_prev_layer))
-                hs[layer] = h_new
-                cs[layer] = c_new
+                cell_layer = self.lstm_cells[layer]
+                h_new, c_new = cell_layer(xt, (h_prev_layer, c_prev_layer))
+                
+                new_hs[layer] = h_new
+                new_cs[layer] = c_new
                 # Apply dropout between layers (not after last layer)
                 if layer < self.num_layers - 1 and self.dropout_layer is not None:
                     xt = self.dropout_layer(h_new)
                 else:
                     xt = h_new
+            
+            # Update for next timestep
+            hs, cs = new_hs, new_cs
             yt = hs[-1] @ self.why + self.by
             logits.append(yt) # T elements of shape (b,vocab_size)
         logits = torch.stack(logits, dim=1) # (B,T,vocab_size)
         return logits
 
+# -----------------------------------------------------------------------------------------------------
+
+device = 'mps'
 model = MultiLayerLSTM(vocab_size, n_layers=n_layers, input_size=n_embd, hidden_size=hidden_dim)
-print(f'{sum(p.numel() for p in model.parameters())} parameters')
+model = model.to(device)
+params = model.parameters()
+print(f'{sum(p.numel() for p in params)} parameters')
+for p in params:
+    p.requires_grad = True
+
                 
-# forward pass
-xb, yb = get_batch('train')
-logits = model(xb)
-print(f'logits shape: {logits.shape}')
+# # forward pass
+# xb, yb = get_batch('train')
+# logits = model(xb)
+# print(f'logits shape: {logits.shape}')
 
-loss = F.cross_entropy(logits.view(-1, logits.shape[-1]), yb.view(-1), ignore_index=-1)
-print(f'loss = {loss.item()}')
+# loss = F.cross_entropy(logits.view(-1, logits.shape[-1]), yb.view(-1), ignore_index=-1)
+# print(f'loss = {loss.item()}')
 
+# model training
+for iter in range(max_iters):
+    xb, yb = get_batch('train')
+    xb, yb = xb.to(device), yb.to(device)
+    logits = model(xb)
+    loss = F.cross_entropy(logits.view(-1, vocab_size), yb.view(-1), ignore_index=-1)
 
+    # zero the gradients
+    for p in model.parameters():
+        p.grad = None
+
+    loss.backward()
+
+    # print loss
+    if iter % eval_interval == 0:
+        losses = estimate_loss()
+        total_norm = torch.sqrt(sum((p.grad**2).sum() for p in model.parameters() if p.grad is not None))
+        print(f'Iteration {iter} train loss = {losses['train']:.4f} | val loss = {losses['val']:.4f} | Gradient norm: {total_norm:.4f}')
+
+    # weights update
+    lr = 1e-1 if iter < 20000 else 1e-2
+    for p in model.parameters():
+        p.data += -(lr * p.grad)
+
+# generate
+with torch.no_grad():
+    print(f'\nStarting generation')
+    print('--'*10)
+    for _ in range(10):
+        idx = torch.zeros(1,1, dtype=torch.long, device=device)
+        h = torch.zeros(1, hidden_dim, device=device)
+        # emb = emb_layer[idx]
+        # print(f'emb shape: {emb.shape}')
+        count = 0
+        while True:
+            logits = model(idx)[:,-1]
+            probs = F.softmax(logits, dim=-1)
+            next_idx = torch.multinomial(probs, num_samples=1).item()
+            idx = torch.cat([idx, torch.tensor([[next_idx]], device=device)], dim=1)
+            if next_idx == 0:
+                break
+        print(''.join([itos[i.item()] for i in idx[0][1:]]))
 
 
 

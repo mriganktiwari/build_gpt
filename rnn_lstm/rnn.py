@@ -107,16 +107,6 @@ class MultiLayerRNN:
 model = MultiLayerRNN()
 print(f'{sum(p.numel() for p in model.parameters)} params')
 
-# forward pass
-xb, yb = get_batch('train')
-logits = model(xb)
-print(f'logits shape: {logits.shape}')
-
-loss = F.cross_entropy(logits.view(-1, logits.shape[-1]), yb.view(-1), ignore_index=-1)
-print(f'loss = {loss.item()}')
-sys.exit()
-
-
 # model training
 for iter in range(max_iters):
     xb, yb = get_batch('train')
@@ -143,7 +133,7 @@ for iter in range(max_iters):
 # generate
 print(f'\nStarting generation')
 print('--'*10)
-for _ in range(5):
+for _ in range(10):
     idx = torch.zeros(1,1, dtype=torch.long)
     h = torch.zeros(1, hidden_dim)
     # emb = emb_layer[idx]
