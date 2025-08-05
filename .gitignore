@@ -5,3 +5,4 @@ test_parsing.py
 **/__pycache__/
 minbpe/models/
 .DS_Store
+discard.py
