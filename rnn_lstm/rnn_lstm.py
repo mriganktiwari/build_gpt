@@ -87,7 +87,7 @@ class MultiLayerRNN:
         hs = [torch.zeros(B, self.hidden_dim) for _ in range(self.n_layers)] # list of h for each layer in n_layers
         x_emb = self.emb_layer[x]
         logits = []
-        
+
         for t in range(T):
             xt = x_emb[:, t, :] # (b, n_embd)
 
@@ -164,7 +164,7 @@ class SimpleLSTM:
 
             yt = h @ self.why + self.by # (b,vocab_size)
             logits.append(yt) # list of T elements of shape (b,vocab_size)
-        return torch.stack(logits, dim=1) # (b,T,h)
+        return torch.stack(logits, dim=1) # (b,T,vocab_size)
 
 
 # model init
