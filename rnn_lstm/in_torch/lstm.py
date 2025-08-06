@@ -23,22 +23,24 @@ class CharLSTM(nn.Module):
         return logits, hc
 
 @torch.no_grad()
-def generate(model, stoi, itos, block_size, prompt=None, device='cpu', max_new_tokens=500):
+def generate(model, stoi, itos, block_size, prompt=None, device='cpu', max_new_tokens=500, out_path='generated.txt'):
     model.eval()
     
     if not prompt:
         idx = torch.tensor([[0]], dtype=torch.long, device=device)
     else:
         idx = torch.tensor([stoi[ch] for ch in prompt], dtype=torch.long, device=device)
-    batch_size = idx.shape[0]
-    generated_tokens = []
+    generated_chars = []
+    
     for _ in range(max_new_tokens):
         idx_cropped = idx[:, -block_size:] # (b,T)
         logits,_ = model(idx_cropped) # (b,T,vocab_size)
         logits = logits[0][-1] # (vocab_size,) vector from last time step
         probs = F.softmax(logits, dim=-1)
         next_idx = torch.multinomial(probs, 1).item()
-        idx = torch.cat([idx, torch.tensor([[next_idx]], device=device)], dim=1)
-    print(''.join([itos[i.item()] for i in idx[0][1:]]))
-    
+        generated_chars.append(itos[next_idx])
+    full_text = ''.join(generated_chars)
+    # print(full_text)
+    with open(out_path, 'w', encoding='utf-8') as fp:
+        fp.write(full_text)
     model.train()
