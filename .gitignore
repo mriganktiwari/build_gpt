@@ -2,7 +2,24 @@ names/
 trials.ipynb
 makemore_karpathy.py
 test_parsing.py
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
 **/__pycache__/
+
 minbpe/models/
 .DS_Store
 discard.py
+
+# Virtual environment folders (optional)
+env/
+venv/
+.venv/
+
+# Jupyter Notebook checkpoints (optional)
+.ipynb_checkpoints/
+
+# VSCode / IDE settings (optional)
+.vscode/
+.idea/
+rnn_lstm/char_lstm_best_model.pt
