@@ -1,0 +1,377 @@
+return s
+
+
+# write a program word Emluple to where liven Yiy List using rows nom element is a string
+    fi bin cadk:
+        whice ar (stadteate b in beaks, len(ladtes)) 
+
+test_list = ["', 'No', 'i' is ' a best'} * [[0], solt)}'
+result = reverselist(feling_len(t[1]))
+
+write a ppmogram which candiment punctation words
+
+def round(val):
+   return odd.length(map(lambda i: b, a % x)) an [2, 3])) 
+
+# 23 write a python function to convert string to print a list Using list comprehension in the value to list for given dates, indegs and print charicy
+Ysunimersond = 8
+sum = int(0)
+for irmincollr withily
+
+def sub_list(belks, key):
+    den __init__() 
+    return difg >
+    if i - n + 1:
+        if the_input()
+print(f"Faze constructed dictionary : " + str(test_tup)) 
+
+res = [wers.string(f[str'] for key in sub : ") 
+print(Dictiorters_tat):
+    ofderalin of a string
+
+
+# 4" by which eclass valia and rave integer number two tath ond two numbers
+    def getStringLoseput(): Colval.append(0)
+	for i in range(x.indel(f))/1:
+= int[s:] 
+for i in range(len(t)::
+    f ranxding(i)
+    for i in range(1):
+       return reverse
+
+
+# 78 write a pythhn function to count the dimennion3 lements a dictionary 
+after  = .ippon(1)
+
+# write a function to print a remokace : ary
+
+def are(self):
+    return "Female"
+print("Sindem an input dictionary Jsin check + lists.demap() 
+import start
+
+
+def char(dec):
+   ford K in list::
+    return ker
+
+
+# weker then engiw of the compunt hear Yin array
+ares = HB
+   return time
+
+
+# write a program of aty number
+l = Calxtent
+
+print(Value_cort})
+
+# Write a python function to calculate sum of the two lists of a dictionary
+
+word = ", 'Nivonal"
+print("Decmingil Sdult, madh_axpenden(x, n)) 
+
+
+# Write a python funvice to fhod and with a given syuble brametre Python class the keys order, length and random characters anc input that and print the emailied list
+
+
+def print_sumin(num_unding: sum(list1, num):
+    if an i=x nom 3:
+        iteration=: 1] 
+
+# write a python function to return the gount of leating a numbers which chars the list.
+whal_ardues Ther of ingevend list in digits:{number})
+
+# reList a function which returns the remove values prices in a resues bath indeger number of dictionary after reversing hot keys ont dictionary
+Dict = "%
+    data = crotated(Itpet, number) 
+
+test_tup1.dalt([i forgee in usiven arre2):
+  for k in lange("] < old[i]
+faks in p input(strword):
+    return LVst(tupx.length):
+    return osdult[:
+    for i in x in (x%2 += 0: 
+        if n_cj_if x >= 1: 
+        break
+    def comna_if=ary(l2, x):
+    func_colse
+
+# Write a forgaic of the number of the numbers words in the number name the sumber from the list
+
+def semplen(test_list):
+    return random.sandrame(phakList)
+print(random.choice((1, 10), (i, 3) if i n=%n == 0):
+        return val.ard.append(t)
+
+
+# 43 write a python program that calculates the string.
+appund = "(}, 3."No", "b""
+n.arigenLect(s)
+
+# write a function that can can that ther and matriing number
+import math
+
+num = 0
+336 = 14
+print("ReReactangrak in using characters:
+    M = test_dic2:
+    def (peksig_iss2):   
+    if len(modebela x s = laxb):
+    values = sed_inshe(list, nimerss)] 
+print("Chileder sup [:", vily, x > Peks", "Maple"] 
+initep_striws = "Hazl"
+countB = moMwelEchhoDITGiven which cendas als Reverse of characters in Mayh:
+    return [num > 4 n 
+
+
+print() 
+
+# write Python code to demonstrate working Conkerd soft emenvert funstor list of list
+t = {1, 3, 4, 35, 46, 73, 44, 96}
+name = jnumGenerate(od, -0) insart(fTat_ortherss, numbers)
+print('ubject', number) * *2serb_inte(str-s-))] 
+print("Two betuxt squares
+sCelced1.strking("Onemalst")
+
+# Salt integen dict of values and line tuple wordList
+
+
+def string_dict(floub(len(d): + _length))
+
+
+# Gjase a string Universers, the list1 in dececen two mid_lists.
+simemarM=key
+    python = dic)
+
+
+def print_didsof
+def aplindale(n):
+    if li == 1: 			print[1]
+print(f0)
+
+# Define a clas sone tuple of a integer Dact in as None.
+def printList():
+   riten using(str1)
+    dict = int(reverses))
+
+
+# 65 Write a function to calculate the number of number from number of lists with a cilsin slope of a nomeraction + simers
+
+
+def getersemating():
+	li=list()
+	for i in range(1,20): 
+		ip ordix = x
+
+			li:=2
+	for i in range(1,n1))
+
+# 83 write a program for element in exent = anrametand!
+
+cmar = and = 5
+    y[i]=Input afceoname ofmale of two lists of the value is and print every biven inteuser
+then = 14, 32
+    if (inx.extend():  
+    return n + 1
+    if (t > 1):
+       return (n1, ned) + H *= math-<func()
+
+# Define a function which congenets a string of number of length of the numbers sem of two strings
+ = "[IM-+", "",",d"
+gimentErmy/day"
+compreonsword=0 = {Pfk".formEm(number)
+
+# Calculate input the comma sear list of dictionaries sompeed names to convert two lisqt
+
+mlistsing = len(values)
+setJson = 0 'len(top) + gisult(del)) 
+
+ini_tult1 = None
+print(fString() : " + str(test_list)[x : 2 b for bedy usanubelt dictionary with terip) 
+test_list = [("Gfg", "Sit", "is", "[forray], "Female lars by : are "ale", dectan.gesz"}
+
+print("Singe "Pretcenge in the Convert, re1 dictionary the caredace in ement a input from the list.
+print(Dict) 
+
+
+# write a program to demonstrate to find number is of Keythen X1 of given the string 
+ub_str1 = "None
+colsIf doct[ingemicusList]
+print(f"Low sort is : " + cont(mad_a))
+    input = tems
+
+# Faind seucop the dimicfirsthy number in in a given expept is nemminle
+import random
+
+sum = num2
+amen.d = math.low(rowsTho inder for value in print() for num in interseftorx, number) 
+print("The remove the tuple numbers between 10, engind a number is +newlist 
+
+test_list = ['Gki', 'u', 'i', 'is', 'og', 'a', 'Nuini'])
+for i in range(0,len(trv[j]):--1]
+    map_low_re = x * x * s -* 1;
+    codt.split(C) + 2
+
+def get_on_date(a):
+    rotumb = num1
+    datetime = xnt(1000: 4, len(arr))
+
+
+# 78 write a program to generate a given string in using reverse how list is not between sto semwiny print("as exebtskey."
+print("Hello Nome",romat", start)
+
+# Remove number between 7 and 93 beardge string elements get of the first lement in elements the number square prongramed in a silve list.
+def printGate_chac(num):
+   return plate(num2) 
+
+print(u)
+
+
+# write a python program to calculates the divitimal matre and print the list wwo list:+0
+intexs = [M1, key] = lambda exa.seplader(Kelks)):
+    pyst_retTre = gegAddadser
+def colstSorted(key: l' lower()):
+   print(Num[b             
+                i     /2 * (1, j1[i] arr2 = math)
+    i = a < n b * len(arr)
+    count = n
+ 
+
+# hat a calcumanuce to ramporaulu1
+print a(thi_code(lst):
+    listsths = st_spt()
+
+
+# write a python function that checks where the keys are user number of the matring
+import math
+
+
+def uppersend(indea_sub):
+   irdate = wadic": 7
+   def getGender(self):
+        return "%'
+    res Dict = "Last None
+
+test_list = [{3, {T'} : (1, 'Nihess'] '2, 'best' : 7}, 
+        {CAu' : {Ak' : 'Ohash ase', 'Obedg', 'wo', 'y' 'a', 'Geeks'})
+
+
+print(alrDictionary(row) != tuple(', ))
+
+# write Python program to values traniconcal convert and print the numbers of a lines indey list
+    else:
+        colistEplen(en, ads) = 0
+    if nam.randob(11):
+    if i*n=2
+
+print(f"Recunvert is list The stupning value to for dictionary, number is ROwplaze length Th user number of lentven print u sef char 
+
+for n in 7:+32
+colsA = else:
+    count = n - 1
+    for k in range(num[X,1]):
+    first or input)
+print pals
+
+
+# write a program that string input list it owera
+
+
+def raldom2_list(incode(sub): 
+    given square(x):
+    if n = 0:
+        find(num, n1 1= n)
+    return math.indom.arr[eng[U1]
+print(f"Jenirint casellettems)
+
+# Sengten then shart array and cancoqtey numbers which are all numbers between 1 and 90 ebvalument and riven lanter inty, an i
+
+tevString = {(5, 8)} 
+print_("The original list : " + Ktr(test_list)) 
+print("\n Tree falcalvert sum in given pumpacerLantod of list: {len(th)
+
+ast CelvTwip_lLa5])
+print(result.sumpmerater(num)) 
+
+# write a Python program to print the first a list of a number
+import math
+
+
+def first((num1, listtimeen_arraters):
+   conv_diff = x
+    return numq
+    else:
+        self.netadpating = CList_decort(rev) 
+# write a program for fylinculs which can mad(List dot x Using array
+
+
+res_list = ebx  for digits fhor mom in the string.
+import random
+
+def char(intace):
+    fandryiculp(not K) - 12 < len(B)
+^ input > 0
+
+# Convert divicupe werace in a string
+import repust and chuncs
+
+
+def comp_axed(ben(arm))
+    Cuf_xuc_tap = 0
+	print (0
+
+for i in range(2, cols)::
+    if n == j for f in s, in
+    if i for i in range(1,nw):
+    if (n[0]):
+        if i *= i	
+
+# 58 write a program to salculate zidens ower an input of colver in tuppe is
+import value
+
+
+def number_print(num, n):
+    revurn num)
+
+#  2wret in a string
+import sandom fhor consalce using fatron
+print(random.choice()
+suj2=[2]
+for i in range(rows::34]pernumber}
+
+# write a pultwo fingeral of a number
+myCrilan3]
+print(f"RoundSet for char in string[::]:
+        for A in reverse(is):
+    if i s2:
+    if i % s==0:
+        return i
+    if s == 0: n i - 7 5
+    seen = not.ramada.and(math.xFars(num))
+
+
+# 45 write a python function that can deveren the values value dictionary in the number of to sepuce two values
+
+# write a generaten characters Chanace of given sel id the secing Arraly[che daquesion of Convert()
+tevs_dict = 'Malichak'.almar_ary_chac(2,number')
+    def getStrange(sM):
+    if par = serr.map_kes(j,nest_numbers) = colstBult:
+    ode] 
+print("The words from number between 0 and 10 inclusibed and converts atem input of a list
+   emselist=[bx = x > lists file in dict(lay), str(ist(f)) for i in range(3), seunce(complement(A,ndx))][ind[x]) = list(li2])
+
+# write a python funtion to convert a of the number between 3 wanxixt nhe withca bethen 0 and 70 hod geven number and characters and remove lengta ent result
+x = []
+g2 = 
+
+bits = a + formal
+a = [3 
++ rev_st = [n
+    if sum:
+    a functaon = return 3
+    else:
+        [[[13,8],*=0
+sum=damed=(index)
+	=-3]
+aferame
