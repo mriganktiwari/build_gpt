@@ -6,5 +6,6 @@ my work towards building a GPT2 type model
     - multi-layer perceptron next char prediction
     - wavenet next char prediction
     - GPT char based text generation
+    - GPT2: recreate
 
 2. I post live coding to my YT channel: 
